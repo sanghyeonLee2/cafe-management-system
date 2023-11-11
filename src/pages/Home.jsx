@@ -1,49 +1,72 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {MenuItemAtom} from "../recoil/MenuItemAtom";
 import Order from "../component/Order";
 import OrderListForm from "../component/OrderListForm";
 import {OrderListAtom} from "../recoil/OrderListAtom";
+import {Link} from "react-router-dom";
+import menuItemInfo from "./MenuItemInfo";
 
 function Home() {
     const menuItemValue = useRecoilValue(MenuItemAtom)
     const [orderList, setOrderList] = useRecoilState(OrderListAtom)
-    const putInOrderList = (e,menuInfo) => {
+    const [showMenuItem, setShowMenuItem] = useState(menuItemValue)
+    const totalPriceRef = useRef()
+    const putInOrderList = (e, menuInfo) => {
+        totalPriceRef.current.value = Number(totalPriceRef.current.value) + menuInfo.menuItemPrice
         const orderListObj = {
-            menuNum: menuInfo.num,
-            menuName: menuInfo.menu_name,
-            menuPrice: menuInfo.price,
-            menuQuantity: e.target.previousSibling.value
+            menuItemNum: menuInfo.menuItemNum,
+            menuItemName: menuInfo.menuItemName,
+            menuItemPrice: menuInfo.menuItemPrice,
+            menuItemQuantity: 1
         }
-        setOrderList([...orderList,orderListObj])
+        setOrderList([...orderList, orderListObj])
+    }
+    useEffect(() => {
+        setShowMenuItem(menuItemValue);
+    }, [menuItemValue]);
+
+    const searchMenu = (e) => {
+        const searchResult = menuItemValue.filter((elem) => {
+            return (elem.menuItemName.includes(e.target.value))
+        })
+        setShowMenuItem(searchResult)
     }
     return (
         <>
+            <div>
+                <SearchBox>
+                    검색 <input type="search" name="text" onChange={searchMenu} required className="search-form"/>
+                </SearchBox>
+            </div>
             <ItemOuterLayout>
-                {menuItemValue.length === 0 ? <h3>메뉴가 없습니다</h3> :
+                {showMenuItem.length === 0 ? <h3>메뉴가 없습니다</h3> :
                     <>
-                        {menuItemValue.map((ele) => {
+                        {showMenuItem.map((ele) => {
                             return (
-                                <ItemLayout key={ele.num}>
+                                <ItemLayout key={ele.menuItemNum}>
                                     <ul>
                                         <li>
-                                            메뉴 번호:{ele.num}
+                                            메뉴 번호:{ele.menuItemNum}
                                         </li>
                                         <li>
-                                            이름: {ele.menu_name}
+                                            이름: {ele.menuItemName}
                                         </li>
                                         <li>
-                                            가격: {ele.price}
+                                            가격: {ele.menuItemPrice}
                                         </li>
                                         <li>
-                                            분류: {ele.classification}
+                                            분류: {ele.menuItemClassification}
                                         </li>
                                         <li>
-                                            <div>수량<input type={"number"} placeholder={"수량을 입력하세요"} defaultValue={1}
-                                                          name={"menuQuantity"}/>
-                                                <button type={"button"} onClick={(e)=>putInOrderList(e,ele)}>주문목록에 담기</button>
-                                            </div>
+                                            <button type={"button"} onClick={(e) => putInOrderList(e, ele)}>주문목록에 담기
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <Link to={"/menuItemInfo"} state={ele} >
+                                                <button type={"button"}>메뉴 상세정보</button>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </ItemLayout>
@@ -52,7 +75,7 @@ function Home() {
                     </>}
             </ItemOuterLayout>
             <Order/>
-            <OrderListForm/>
+            <OrderListForm totalPriceRef={totalPriceRef}/>
         </>
     );
 }
@@ -68,3 +91,8 @@ const ItemLayout = styled.div`
   height: 230px;
   width: 170px;
   background-color: aqua`
+const SearchBox = styled.form`
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  justify-content: center`
