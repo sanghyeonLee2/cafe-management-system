@@ -1,54 +1,52 @@
-import React, {useState} from 'react';
-import {useRecoilValue} from "recoil";
+import React, {useRef, useState} from 'react';
+import {useRecoilState, useRecoilValue} from "recoil";
 import {OrderListAtom} from "../recoil/OrderListAtom";
 import axios from "axios";
 import {UserIdAtom} from "../recoil/UserAuth";
 import {useNavigate} from "react-router-dom";
 
-
-function OrderListForm(props) {
-    const navigate= useNavigate();
-    const orderListValue = useRecoilValue(OrderListAtom)
+function OrderListForm({totalPriceRef}) {
+    const navigate = useNavigate();
+    const [orderListState, setOrderListState] = useRecoilState(OrderListAtom)
     const userIdValue = useRecoilValue(UserIdAtom)
     const [selectPayment, setSelectPayment] = useState("");
-    let totalPrice = 0;
-    const calTotalPrice = () => {
-        orderListValue.map((ele) => {
-            return (
-                totalPrice += ele.menuPrice)
-        })
-        return totalPrice;
-    }
+
     const selectPaymentFtn = (e) => {
         setSelectPayment(e.target.value)
     }
-    const newArrFtn = ()=> {
-        return (orderListValue.map((ele) => {
-            const {menuName, menuPrice, ...rest} = ele
-            return rest;
-        }))
+
+    const orderQuantityOnChg = (e, idx) => {
+        totalPriceRef.current.value = Number(totalPriceRef.current.value) + ((e.target.value - 1) * orderListState[idx].menuItemPrice)
+        setOrderListState((prev) =>
+            prev.map((item, index) =>
+                index !== idx
+                    ? item
+                    : {...item, menuItemQuantity: e.target.value}
+            )) //gpt사용
     }
-    //gpt도움
+
     const orderBtn = async (e) => {
         e.preventDefault();
-
-        const newArrFtn = ()=> {
-            return orderListValue.filter((ele) => {
-                const {menuName, menuPrice, ...rest} = ele
-                return rest;
-            })
-        }
+        let newOrderDetailArr = []
+        //menuItemNum,orderDetailQuantity
+        orderListState.map((elem) => {
+            const tempObj = {
+                menuItemNum: elem.menuItemNum,
+                orderDetailQuantity: elem.menuItemQuantity
+            }
+            newOrderDetailArr.push(tempObj)
+        })
 
         const orderObj = {
-            orderList: newArrFtn()
+            orderList: newOrderDetailArr
             ,
-            order: {
-                payment: selectPayment,
+            menuOrder: {
+                menuOrderPayment: selectPayment,
                 userId: userIdValue,
+                menuOrderTotalPrice: totalPriceRef.current.value
             }
         }
-        console.log(orderObj)
-        const result = await axios.post("http://localhost:4000/order", orderObj)
+        const result = await axios.post("http://localhost:8080/menu-order", orderObj)
         if (result.status === 200) {
             alert("주문을 완료하였습니다")
             navigate("/");
@@ -61,16 +59,19 @@ function OrderListForm(props) {
         <div>
             <fieldset>
                 <legend><h2>주문목록</h2></legend>
-                {orderListValue.length !== 0 ?
-                    orderListValue.map((ele) => {
+                {orderListState.length !== 0 ?
+                    orderListState.map((ele, idx) => {
                             return (
-                                <div key={ele.menuNum}>
+                                <div key={ele.menuItemNum}>
                                     <ul>
                                         <li>
-                                            메뉴이름 : {ele.menuName}
+                                            메뉴이름 : {ele.menuItemName}
                                         </li>
-                                        <li>메뉴 가격 : {ele.menuPrice}</li>
-                                        <li>수량 : {ele.menuQuantity}</li>
+                                        <li>메뉴 가격 : {ele.menuItemPrice}</li>
+                                        <li>수량 : <input type={"number"}
+                                                        onChange={(e) => orderQuantityOnChg(e, idx)}
+                                                        defaultValue={ele.menuItemQuantity}/>
+                                        </li>
                                     </ul>
                                 </div>
                             )
@@ -81,13 +82,14 @@ function OrderListForm(props) {
                 <form onSubmit={orderBtn}>
                     <div>
                         <h3>총 결제금액</h3>
-                        {calTotalPrice()} 원
+                        <input type={"number"} ref={totalPriceRef} defaultValue={0}/> 원
                     </div>
                     <div>
                         <h3>결제방식</h3>
-                        <input type={"radio"} name={"payment"} value={"cash"} onChange={selectPaymentFtn}/>현금
-                        <input type={"radio"} name={"payment"} value={"creditCard"} onChange={selectPaymentFtn}/>신용카드
-                        <input type={"radio"} name={"payment"} value={"check"} onChange={selectPaymentFtn}/>수표
+                        <input type={"radio"} name={"menuOrderPayment"} value={"cash"} onChange={selectPaymentFtn}/>현금
+                        <input type={"radio"} name={"menuOrderPayment"} value={"creditCard"}
+                               onChange={selectPaymentFtn}/>신용카드
+                        <input type={"radio"} name={"menuOrderPayment"} value={"check"} onChange={selectPaymentFtn}/>수표
                     </div>
                     <button type={"submit"}>결제하기</button>
                 </form>
