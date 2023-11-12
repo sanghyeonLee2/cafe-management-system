@@ -78,6 +78,7 @@ router.get("/", async (req, res, next) => {
     }
 
 })
+
 router.get("/recipe", async (req, res) => {
     const {menuItemNum} = req.query
     try {
@@ -88,6 +89,33 @@ router.get("/recipe", async (req, res) => {
         res.status(500).json({error: err.message});
     }
     console.log(menuItemNum)
+}).patch("/recipe", async (req,res)=>{
+    const{menuRecipeNum, menuRecipeUsage} = req.body
+    try {
+        await MenuRecipe.update({
+                menuRecipeUsage
+            },
+            {
+                where: {menuRecipeNum},
+            }
+        )
+        res.status(200).send("MenuRecipeUsage update successfully!");
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({error: err.message});
+    }
+}).delete("/recipe", async (req, res) => {
+    const {menuRecipeNum} = req.body;
+    try {
+        await MenuRecipe.destroy({
+            where: {menuRecipeNum}
+        })
+        res.status(200).json("MenuRecipe delete successfully!")
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({error: err.message});
+    }
+
 })
 
 module.exports = router;
