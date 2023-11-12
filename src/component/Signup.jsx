@@ -8,7 +8,13 @@ import axios from "axios";
 function Signup(props) {
     //const API_KEY = process.env.REACT_APP_API_KEY;
     const navigate = useNavigate();
-    const [userInfo, setUserInfo] = useState({id:"", password:"",username: "", address: "", userPhoneNum: ""});
+    const [userInfo, setUserInfo] = useState({
+        userId: "",
+        userPassword: "",
+        userName: "",
+        userAddress: "",
+        userPhoneNum: ""
+    });
     const setPopupAtom = useSetRecoilState(SignupPopupAtom)
     const handleInputChange = (e) => {
         setUserInfo((prev) => ({
@@ -19,16 +25,17 @@ function Signup(props) {
     console.log(userInfo)
     const handleSignup = async (e) => {
         e.preventDefault();
-        const result = await axios.post("http://localhost:4000/signup", userInfo);
+        const result = await axios.post("http://localhost:8080/user/signup", userInfo);
         try {
             if (result.status === 200) {
                 alert("회원가입 성공 로그인을 하세요")
                 setPopupAtom(false);
                 navigate("/")
-            } else {
-                alert("실패")
+                return
             }
+            alert("실패")
         } catch (err) {
+            alert("실패")
             console.log(err)
         }
     }
@@ -36,15 +43,15 @@ function Signup(props) {
         <PopupLayout>
             <legend>회원 정보 입력</legend>
             <form onSubmit={handleSignup}>
-                <span onClick={()=>setPopupAtom(false)}>뒤로가기</span>
+                <span onClick={() => setPopupAtom(false)}>뒤로가기</span>
                 <br/>
-                <input type="text" name={"username"} onChange={handleInputChange} placeholder={"이름 입력"}/>
+                <input type="text" name={"userName"} onChange={handleInputChange} placeholder={"이름 입력"}/>
                 <br/>
-                <input type="text" name={"id"} onChange={handleInputChange} placeholder={"아이디 입력"}/>
+                <input type="text" name={"userId"} onChange={handleInputChange} placeholder={"아이디 입력"}/>
                 <br/>
-                <input type="text" name={"password"} onChange={handleInputChange} placeholder={"비밀번호 입력"}/>
+                <input type="text" name={"userPassword"} onChange={handleInputChange} placeholder={"비밀번호 입력"}/>
                 <br/>
-                <input type="text" name={"address"} onChange={handleInputChange} placeholder={"주소 입력"}/>
+                <input type="text" name={"userAddress"} onChange={handleInputChange} placeholder={"주소 입력"}/>
                 <br/>
                 <input type="text" name={"userPhoneNum"} onChange={handleInputChange} placeholder={"전화번호 입력"}/>
                 <br/>
