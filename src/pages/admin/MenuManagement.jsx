@@ -3,6 +3,7 @@ import axios from "axios";
 import {useRecoilState} from "recoil";
 import {MenuItemAtom} from "../../recoil/MenuItemAtom";
 import CreateMenuRecipe from "../../component/CreateMenuRecipe";
+import MenuRecipeInfo from "../../component/MenuRecipeInfo";
 
 function MenuManagement(props) {
     const [menuFormState, setMenuFormState] = useState({
@@ -15,6 +16,7 @@ function MenuManagement(props) {
     const [trigger, setTrigger] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false)
     const [isInsertRecipe, setIsInsertRecipe] = useState(false)
+    const [showRecipePopUp,setShowRecipePopUp] = useState(false)
     const inputFormChg = (e) => {
         setMenuFormState((prev) => ({
             ...prev, [e.target.name]: e.target.value
@@ -66,6 +68,9 @@ function MenuManagement(props) {
     }
     return (
         <div>
+            <div>
+                {showRecipePopUp && <MenuRecipeInfo menuItemNum={showRecipePopUp}/>}
+            </div>
             {isInsertRecipe && <CreateMenuRecipe menuFormState={menuFormState} trigger={trigger} setTrigger={setTrigger}
                                                  setIsInsertRecipe={setIsInsertRecipe}/>}
             {isPopupOpen &&
@@ -111,6 +116,7 @@ function MenuManagement(props) {
                     <th>특별메뉴구분</th>
                     <th>이름</th>
                     <th>추가/수정/삭제</th>
+                    <th>레시피</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -127,6 +133,9 @@ function MenuManagement(props) {
                                 <td>
                                     <button type={"button"} onClick={() => udtMenuForm(ele)}>수정</button>
                                     <button type={"button"} name={ele.menuItemNum} onClick={delMenuBtn}>삭제</button>
+                                </td>
+                                <td>
+                                    <button type={"button"} onClick={()=>setShowRecipePopUp(ele.menuItemNum)}>레시피 보기</button>
                                 </td>
                             </tr>
                         )
