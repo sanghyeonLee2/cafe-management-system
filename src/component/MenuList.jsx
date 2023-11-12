@@ -26,10 +26,7 @@ function MenuList(props) {
             alert("로그인 실패")
         }
     }
-    console.log(menuList)
     const delMenuBtn = async (e) =>{
-        console.log(e.target.name)
-
         const result = await axios.delete("http://localhost:4000/menu-item/delete",{data: {itemNum: e.target.name}})
         if (result.status === 200) {
             alert("메뉴가 삭제되었습니다.")
