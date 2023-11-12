@@ -9,18 +9,18 @@ import {useNavigate} from "react-router-dom";
 
 function Signin() {
     const setIsSignin = useSetRecoilState(UserIdAtom)
-    const [signInform, setSignInform] = useState({id:"", password:""});
+    const [signInform, setSignInform] = useState({
+        userId:"", userPassword:""});
     const navigate = useNavigate();
-    const signinInputOnchg= (e) =>{
+    const signinInputOnChg= (e) =>{
         setSignInform((prev)=>({
                 ...prev, [e.target.name]: e.target.value
             }))
     }
     const signinBtn = async () => {
-        const result = await axios.post("http://localhost:4000/signin",
-            signInform)
+        const result = await axios.post("http://localhost:8080/user/signin",
+            signInform, {withCredentials: true}) //요청에 쿠키를 포함시키라는 지시
         if(result.status === 200){
-            console.log(result.data)
             setIsSignin(result.data.userId);
             setPopupValue(false);
             navigate("/admin");
@@ -36,9 +36,9 @@ function Signin() {
             <legend>로그인</legend>
             <span onClick={()=>setPopupValue(false)}>뒤로가기</span>
             <br/>
-            <input type={"text"} name={"id"} onChange={signinInputOnchg}/>
+            <input type={"text"} name={"userId"} onChange={signinInputOnChg}/>
             <br/>
-            <input type="text" name={"password"} onChange={signinInputOnchg}/>
+            <input type={"text"} name={"userPassword"} onChange={signinInputOnChg}/>
             <br/>
             <button type={"button"} onClick={signinBtn}>확인</button>
         </PopupLayout>
