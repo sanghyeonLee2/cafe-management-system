@@ -7,3 +7,9 @@ export const SignupPopupAtom = atom({
     key:"SignupPopupAtom",
     default :false
 })
+
+
+export const UdtPopupAtom = atom({
+    key:"UdtPopupAtom",
+    default :false
+})
