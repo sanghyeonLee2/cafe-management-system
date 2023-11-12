@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import MenuList from "../../component/MenuList";
-import {useRecoilState} from "recoil";
-import {MenuItemAtom} from "../../recoil/MenuItemAtom";
 
 function MaterialManagement(props) {
     const [showMaterial, setShowMaterial] = useState([])
