@@ -1,0 +1,25 @@
+{
+  "development": {
+    "username": "root",
+    "password": "178446",
+    "database": "cafe_management",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "port": 3306,
+    "logging": false
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "test_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "prod_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
