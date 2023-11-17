@@ -2,11 +2,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import styled from "styled-components";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {MenuItemAtom} from "../recoil/MenuItemAtom";
-import Order from "../component/Order";
 import OrderListForm from "../component/OrderListForm";
 import {OrderListAtom} from "../recoil/OrderListAtom";
 import {Link} from "react-router-dom";
-import menuItemInfo from "./MenuItemInfo";
 
 function Home() {
     const menuItemValue = useRecoilValue(MenuItemAtom)
@@ -74,7 +72,6 @@ function Home() {
                         })}
                     </>}
             </ItemOuterLayout>
-            <Order/>
             <OrderListForm totalPriceRef={totalPriceRef}/>
         </>
     );
@@ -88,9 +85,12 @@ const ItemOuterLayout = styled.section`
   flex-wrap: nowrap;
 `
 const ItemLayout = styled.div`
+  text-align: center;
   height: 230px;
   width: 170px;
-  background-color: aqua`
+  background-color: white;
+  transition: box-shadow .2s ease
+`
 const SearchBox = styled.form`
   display: flex;
   align-items: center;

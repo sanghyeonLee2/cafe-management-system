@@ -12,10 +12,10 @@ async function saveSession(req) {
 }
 
 router.post("/signup", async (req, res, next) => {
-    const {userId, userPassword, userName, userAddress, userPhoneNum} = req.body;
+    const {userId, userPassword, userName, userAddress, userPhoneNum, userIsAdmin} = req.body;
     try {
         await User.create({
-            userId, userPassword, userName, userAddress, userPhoneNum
+            userId, userPassword, userName, userAddress, userPhoneNum, userIsAdmin
         });
         res.status(200).send("User registered successfully!");
     } catch (err) {
@@ -25,17 +25,19 @@ router.post("/signup", async (req, res, next) => {
 });
 
 router.post("/signin", async (req, res) => {
+    console.log(req.body)
     const {userId, userPassword} = req.body;
     try {
-        const {dataValues} = await User.findOne({
+        const result= await User.findOne({
             where: {
                 userId, userPassword
-            },
+            },raw:true
         })
-        if (dataValues.userId) {
-            const {userName, userAddress, userPhoneNum, userId} = dataValues
+        console.log("123",result)
+        if (result.userId) {
+            const {userName, userAddress, userPhoneNum, userId, userIsAdmin} = result
             req.session.user = {
-                userName, userAddress, userPhoneNum, userId
+                userName, userAddress, userPhoneNum, userId, userIsAdmin
             };
             await saveSession(req);
             res.status(200).json(req.session.user);

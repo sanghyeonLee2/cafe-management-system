@@ -24,6 +24,7 @@ function OrderManagement(props) {
         }
         fetchOrderInfo()
     }, []);
+    console.log(showMaterial)
     return (
         <div>
             <table border={"1"}>
@@ -33,7 +34,6 @@ function OrderManagement(props) {
                     <th>주문번호</th>
                     <th>고객 ID</th>
                     <th>고객 이름</th>
-                    <th>고객 이름</th>
                     <th>고객 연락처</th>
                     <th>주문 날짜</th>
                     <th>결제수단</th>
@@ -42,18 +42,20 @@ function OrderManagement(props) {
                 </tr>
                 </thead>
                 <tbody>
-                {showMaterial.map((ele) =>
-                    <tr key={ele.materialNum}>
-                        <th>주문번호</th>
-                        <th>고객 ID</th>
-                        <th>고객 이름</th>
-                        <th>고객 이름</th>
-                        <th>고객 연락처</th>
-                        <th>주문 날짜</th>
-                        <th>결제수단</th>
-                        <th>배송지</th>
-                        <th>총 주문금액</th>
-                    </tr>)
+                {showMaterial.length > 0 ?
+                    showMaterial.map((ele,idx) =>
+                        <tr key={idx}>
+                            <td>{ele.menuOrderNum}</td>
+                            <td>{ele.userId}</td>
+                            <td>{ele["User.userName"]}</td>
+                            <td>{ele["User.userPhoneNum"]}</td>
+                            <td>{ele.menuOrderDate}</td>
+                            <td>{ele.menuOrderPayment}</td>
+                            <td>{ele["User.userAddress"]}</td>
+                            <td>{ele.menuOrderTotalPrice}</td>
+                        </tr>)
+                    :
+                    null
                 }
                 </tbody>
             </table>

@@ -7,21 +7,22 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
     const {userId} = req.query;
    try {
-       const result = await MenuOrder.findOne({
+       const result = await MenuOrder.findAll({
            include: [
                {
                    model: User,
-                   attributes: ["menuOrderNum", "menuOrderPayment", "menuOrderDate", "userId", "menuOrderTotalPrice", "userAddress", "userName", "userPhoneNum"],
                    where: {userId},
+                   required:true
                }
            ]
+           ,raw:true
        })
-       console.log(result)
+       res.status(200).json(result)
    }
    catch (err) {
        console.log(err.message)
+       res.status(500).json({error: err.message});
    }
-
 })
 
 module.exports = router;

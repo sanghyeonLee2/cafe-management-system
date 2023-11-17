@@ -9,11 +9,11 @@ function AdminPage(props) {
                 관리자 페이지
             </AdminTitleLayout>
             <ul>
-                <li><Link to={"/admin/menu-management"}>메뉴관리</Link></li>
-                <li><Link to={"/admin/user-management"}>고객관리</Link></li>
-                <li><Link to={"/admin/order-management"}>주문관리</Link></li>
-                <li><Link to={"/admin/material-management"}>재료관리/메뉴생성</Link></li>
-                <li><Link to={"/admin/supplier-management"}>공급업체 목록</Link></li>
+                <PageLi><Link to={"/admin/menu-management"}>메뉴관리</Link></PageLi>
+                <PageLi><Link to={"/admin/user-management"}>고객관리</Link></PageLi>
+                <PageLi><Link to={"/admin/order-management"}>주문관리</Link></PageLi>
+                <PageLi><Link to={"/admin/material-management"}>재료관리</Link></PageLi>
+                <PageLi><Link to={"/admin/supplier-management"}>공급업체 목록</Link></PageLi>
             </ul>
         </>
     );
@@ -23,4 +23,10 @@ const AdminTitleLayout = styled.h2`
   display: flex;
   justify-content: center;
 `
+const PageLi = styled.li`
+  display: flex;
+  justify-content: center;
+  `
+
+
 export default AdminPage;

@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import {TextAlignCenter} from "../styles/TextAlignCenter";
 
-function MenuRecipeInfo({menuItemNum}) {
+function MenuRecipeInfo({menuItemNum, setShowRecipePopUp}) {
     const [showMenuRecipeInfo, setShowMenuRecipeInfo] = useState([])
     const [udtRecipeUsageState, setUdtRecipeUsageState] = useState(
         {menuRecipeNum: "", menuRecipeUsage: ""}
@@ -37,8 +38,7 @@ function MenuRecipeInfo({menuItemNum}) {
         alert("수정 실패")
     }
 
-    const delRecipeBtn = async (menuRecipeNum) =>{
-        console.log(menuRecipeNum)
+    const delRecipeBtn = async (menuRecipeNum) => {
         const result = await axios.delete("http://localhost:8080/menu-item/recipe", {data: {menuRecipeNum}})
         if (result.status === 200) {
             alert("삭제가 완료되었습니다")
@@ -49,7 +49,10 @@ function MenuRecipeInfo({menuItemNum}) {
     }
 
     return (
-        <>
+        <TextAlignCenter>
+            <span onClick={() => {
+                setShowRecipePopUp(false)
+            }}>취소</span>
             {showMenuRecipeInfo.length > 0 ? (
                 <>
                     <h2>메뉴이름 : {showMenuRecipeInfo[0].menuItemNum}</h2>
@@ -65,7 +68,7 @@ function MenuRecipeInfo({menuItemNum}) {
                                     <button type={"button"} onClick={udtRecipeBtn}>수정</button>
                                 </li>
                                 <li>
-                                    <button type={"button"} onClick={()=>delRecipeBtn(elem.menuRecipeNum)}>삭제</button>
+                                    <button type={"button"} onClick={() => delRecipeBtn(elem.menuRecipeNum)}>삭제</button>
                                 </li>
                             </ul>
                         );
@@ -74,7 +77,7 @@ function MenuRecipeInfo({menuItemNum}) {
             ) : (
                 <h2>로딩 중...</h2>
             )}
-        </>
+        </TextAlignCenter>
     );
 }
 

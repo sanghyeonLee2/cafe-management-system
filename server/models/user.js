@@ -24,6 +24,11 @@ class User extends Sequelize.Model {
                 type: Sequelize.INTEGER,
                 allowNull: false
             },
+            userIsAdmin: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
+            }
         }, {
             sequelize,
             timestamps: false,

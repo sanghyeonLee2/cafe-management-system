@@ -13,13 +13,15 @@ function Signup(props) {
         userPassword: "",
         userName: "",
         userAddress: "",
-        userPhoneNum: ""
+        userPhoneNum: "",
+        userIsAdmin: false
     });
     const setPopupAtom = useSetRecoilState(SignupPopupAtom)
     const handleInputChange = (e) => {
         setUserInfo((prev) => ({
             ...prev,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+            userIsAdmin:e.target.checked
         }))
     }
     console.log(userInfo)
@@ -55,6 +57,8 @@ function Signup(props) {
                 <br/>
                 <input type="text" name={"userPhoneNum"} onChange={handleInputChange} placeholder={"전화번호 입력"}/>
                 <br/>
+                관리자 여부
+                <input type="checkbox" name={"userIsAdmin"} onChange={handleInputChange}/>
                 <button type="submit">확인</button>
             </form>
         </PopupLayout>

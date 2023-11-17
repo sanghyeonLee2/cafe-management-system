@@ -4,6 +4,7 @@ import {OrderListAtom} from "../recoil/OrderListAtom";
 import axios from "axios";
 import {UserIdAtom} from "../recoil/UserAuth";
 import {useNavigate} from "react-router-dom";
+import styled from "styled-components";
 
 function OrderListForm({totalPriceRef}) {
     const navigate = useNavigate();
@@ -49,6 +50,8 @@ function OrderListForm({totalPriceRef}) {
         const result = await axios.post("http://localhost:8080/menu-order", orderObj)
         if (result.status === 200) {
             alert("주문을 완료하였습니다")
+            setOrderListState([])
+            totalPriceRef.current.value = 0;
             navigate("/");
         } else {
             alert("주문 실패")
@@ -56,9 +59,9 @@ function OrderListForm({totalPriceRef}) {
     }
     //주문 요청 필요 데이터: payment, user_phone_num
     return (
-        <div>
+        <OrderListLayout>
             <fieldset>
-                <legend><h2>주문목록</h2></legend>
+                <legend><h2>장바구니</h2></legend>
                 {orderListState.length !== 0 ?
                     orderListState.map((ele, idx) => {
                             return (
@@ -68,21 +71,22 @@ function OrderListForm({totalPriceRef}) {
                                             메뉴이름 : {ele.menuItemName}
                                         </li>
                                         <li>메뉴 가격 : {ele.menuItemPrice}</li>
-                                        <li>수량 : <input type={"number"}
-                                                        onChange={(e) => orderQuantityOnChg(e, idx)}
-                                                        defaultValue={ele.menuItemQuantity}/>
+                                        <li>수량 : <br/>
+                                            <input type={"number"}
+                                                   onChange={(e) => orderQuantityOnChg(e, idx)}
+                                                   defaultValue={ele.menuItemQuantity}/>개
                                         </li>
                                     </ul>
                                 </div>
                             )
                         }
                     )
-                    : <h2>주문목록이 없습니다.</h2>
+                    : <h2>장바구니 목록이 없습니다.</h2>
                 }
                 <form onSubmit={orderBtn}>
                     <div>
                         <h3>총 결제금액</h3>
-                        <input type={"number"} ref={totalPriceRef} defaultValue={0}/> 원
+                        <TotalPriceInput type={"number"} ref={totalPriceRef} readOnly defaultValue={0}/> 원
                     </div>
                     <div>
                         <h3>결제방식</h3>
@@ -94,9 +98,17 @@ function OrderListForm({totalPriceRef}) {
                     <button type={"submit"}>결제하기</button>
                 </form>
             </fieldset>
-        </div>
+        </OrderListLayout>
     )
         ;
 }
+
+const OrderListLayout = styled.div`
+  text-align: center;
+`
+const TotalPriceInput = styled.input`
+  border: 0;
+  background-color: unset;
+  width: 80px`
 
 export default OrderListForm;

@@ -9,38 +9,30 @@ router.get("/", async (req, res, next) => {
     } catch (err) {
         res.status(500).json({error: err.message});
     }
-});
-
-/*router.post("/signin", async (req, res) => {
-    const {userId, userPassword} = req.body;
+}).put("/", async (req, res) => {
+    console.log(req.body)
+    const {
+        materialNum,
+        materialUnit,
+        materialName,
+        materialQuantity
+    } = req.body;
     try {
-        const {dataValues} = await User.findOne({
-            where: {
-                userId, userPassword
+        await Material.update({
+                materialUnit,
+                materialName,
+                materialQuantity
             },
-        })
-        if (dataValues.userId) {
-            const {userName, userAddress, userPhoneNum, userId} = dataValues
-            req.session.user = {
-                userName, userAddress, userPhoneNum, userId
-            };
-            await saveSession(req);
-            res.status(200).json(req.session.user);
-            return;
-        }
-        res.status(401).json({error: "Invalid credentials"});
+            {
+                where: {materialNum},
+            }
+        )
+        res.status(200).send("Material update successfully!");
     } catch (err) {
-        console.error(err);
+        console.log(err.message);
         res.status(500).json({error: err.message});
     }
-});
+})
 
-router.get("/signin/success", async (req, res) => {
-    try {
-        res.status(200).json(req.session.user);
-    }
-    catch (err){
-        res.status(404).json("User not found")
-    }
-})*/
+
 module.exports = router;

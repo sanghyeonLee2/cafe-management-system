@@ -14,7 +14,7 @@ function SignoutBtn(props) {
         navigate("/");
     }
     return (
-        <div><p onClick={signoutBtn}>로그아웃</p></div>
+        <><p onClick={signoutBtn}>로그아웃</p></>
     );
 }
 

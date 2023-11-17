@@ -23,7 +23,7 @@ function Signin() {
         if(result.status === 200){
             setIsSignin(result.data.userId);
             setPopupValue(false);
-            navigate("/admin");
+            navigate("/");
         }
         else{
             alert("로그인 실패")

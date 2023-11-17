@@ -4,6 +4,7 @@ import {useRecoilState} from "recoil";
 import {MenuItemAtom} from "../../recoil/MenuItemAtom";
 import CreateMenuRecipe from "../../component/CreateMenuRecipe";
 import MenuRecipeInfo from "../../component/MenuRecipeInfo";
+import {CenterLayout} from "../../styles/CenterSortLayout";
 
 function MenuManagement(props) {
     const [menuFormState, setMenuFormState] = useState({
@@ -69,7 +70,7 @@ function MenuManagement(props) {
     return (
         <div>
             <div>
-                {showRecipePopUp && <MenuRecipeInfo menuItemNum={showRecipePopUp}/>}
+                {showRecipePopUp && <MenuRecipeInfo menuItemNum={showRecipePopUp} setShowRecipePopUp={setShowRecipePopUp}/>}
             </div>
             {isInsertRecipe && <CreateMenuRecipe menuFormState={menuFormState} trigger={trigger} setTrigger={setTrigger}
                                                  setIsInsertRecipe={setIsInsertRecipe}/>}

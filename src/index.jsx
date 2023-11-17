@@ -12,6 +12,8 @@ import MaterialManagement from "./pages/admin/MaterialManagement";
 import SupplierManagement from "./pages/admin/SupplierManagement";
 import Supplier from "./pages/Supplier";
 import MenuItemInfo from "./pages/MenuItemInfo";
+import Order from "./pages/Order";
+import OrderInfo from "./pages/OrderInfo";
 
 const router = createBrowserRouter([{
     path: "/",
@@ -20,6 +22,14 @@ const router = createBrowserRouter([{
         {
             path: "",
             element: <Home/>
+        },
+        {
+            path: "/order",
+            element: <Order/>
+        },
+        {
+            path: "/order-info",
+            element: <OrderInfo/>
         },
         {
             path: "/admin",

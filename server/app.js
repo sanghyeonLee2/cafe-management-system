@@ -12,6 +12,7 @@ const materialController = require("./controllers/materialController")
 const menuController = require("./controllers/menuController")
 const orderController = require("./controllers/orderController")
 const orderAdminController = require("./controllers/orderAdminController")
+const adminController = require("./controllers/adminController")
 const FileStore = require("session-file-store")(session);
 app.set("port", process.env.PORT || 8080);
 
@@ -46,6 +47,7 @@ app.use("/supply", supplyController)
 app.use("/material", materialController)
 app.use("/menu-item", menuController)
 app.use("/admin/order",orderAdminController)
+app.use("/admin",adminController)
 app.listen(app.get("port"), () => {
     console.log(app.get("port"), "번 포트에서 대기중");
 });

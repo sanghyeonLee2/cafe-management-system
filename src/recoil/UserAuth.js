@@ -14,7 +14,8 @@ export const UserInfoAtom = atom({
     default:{
         address:"",
         username: "",
-        phoneNum:""
+        phoneNum:"",
+        userIsAdmin: false
     },
     effects_UNSTABLE:[persistAtom]
 })

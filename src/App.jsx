@@ -1,5 +1,5 @@
 import Header from "./component/Header";
-import styled from "styled-components";
+import {styled,createGlobalStyle} from "styled-components";
 import {Outlet} from "react-router-dom";
 import Signin from "./component/Signin";
 import {useRecoilValue, useSetRecoilState} from "recoil";
@@ -51,6 +51,7 @@ function App() {
     const signupPopupValue = useRecoilValue(SignupPopupAtom)
     return (
         <div>
+            <GlobalStyle/>
             <div>
                 {signinPopupValue && <Signin/>}
             </div>
@@ -66,13 +67,17 @@ function App() {
         </div>
     );
 }
-
+const GlobalStyle = createGlobalStyle`
+  li{list-style:none;
+    margin-left: -40px;
+      }
+`
 const InnerLayout = styled.div`
   width: 100%;
   display: flex;
   align-items: center `
 const OuterLayout = styled.div`
-  background-color: #e3e3e3;
+  background-color: whitesmoke ;
   height: 1200px`
 
 export default App;

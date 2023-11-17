@@ -3,6 +3,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {useRecoilValue} from "recoil";
 import {UserIdAtom} from "../recoil/UserAuth";
+import styled from "styled-components";
 
 function MenuItemInfo(props) {
     const navigate = useNavigate();
@@ -51,7 +52,7 @@ function MenuItemInfo(props) {
         fetchMenuInfo()
     }, []);
     return (
-        <div>
+        <MenuItemInfoLayout>
             {directOrderPopUp && <div>
                 <h3>결제 수단 선택</h3>
                 <input type={"radio"} name={"menuOrderPayment"} value={"cash"} onChange={selectPaymentFtn}/>현금
@@ -82,9 +83,12 @@ function MenuItemInfo(props) {
                 </ul>
             </div>
             <input type={"number"} defaultValue={1} onChange={(e) => setDirectOrderQuantity(e.target.value)}/>
+            <br/>
             <button type={"button"} onClick={() => setDirectOrderPopUp(true)}>바로구매</button>
-        </div>
+        </MenuItemInfoLayout>
     );
 }
-
+const MenuItemInfoLayout = styled.div`
+  text-align: center
+`
 export default MenuItemInfo;
