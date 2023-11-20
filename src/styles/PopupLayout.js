@@ -11,7 +11,7 @@ export const PopupLayout = styled.fieldset`
   button {
     width: 80%;
   }
-  span{
+  span {
     cursor: pointer;
   }
-`
+`;
