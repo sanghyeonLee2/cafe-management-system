@@ -71,7 +71,6 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <RecoilRoot>
-    {" "}
     <RouterProvider router={router} />
   </RecoilRoot>
 );
