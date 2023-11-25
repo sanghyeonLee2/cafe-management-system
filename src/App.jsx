@@ -1,77 +1,109 @@
-import Header from "./component/Header";
+import Header from "./components/ui/Header";
 import { styled, createGlobalStyle } from "styled-components";
-import { Outlet } from "react-router-dom";
-import Signin from "./component/Signin";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { SigninPopupAtom, SignupPopupAtom } from "./recoil/PopupAtom";
-import Signup from "./component/Signup";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { PopupAtom } from "./recoil/PopupAtom";
 import { useEffect } from "react";
 import axios from "axios";
-import { UserIdAtom, UserInfoAtom } from "./recoil/UserAuth";
-import { MenuItemAtom } from "./recoil/MenuItemAtom";
+import { UserInfoAtom } from "./recoil/UserAuth";
+import Popup from "./components/popup/Popup";
 
 function App() {
-  const userIdState = useRecoilValue(UserIdAtom);
-  const setUserInfo = useSetRecoilState(UserInfoAtom);
-  const setMenuItem = useSetRecoilState(MenuItemAtom);
+  const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
+  const popup = useRecoilValue(PopupAtom);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const result = await axios.get(
-        "http://localhost:8080/user/signin/success",
-        { withCredentials: true }
-      );
-      if (result.status === 200) {
-        setUserInfo(result.data); //userId는 어따씀?
-        return;
-      }
-      if (result.status === 404) {
-        userIdState(null);
-      }
-    };
-    fetchUserInfo();
-  }, [setUserInfo, userIdState]);
-  useEffect(() => {
-    const fetchMenuItem = async () => {
-      const result = await axios.get("http://localhost:8080/menu-item");
-      if (result.status === 200) {
-        setMenuItem(result.data);
-        return;
-      }
-      alert("메뉴를 불러오지 못했습니다.");
-    };
-    fetchMenuItem();
-  }, []);
+      try {
+        const result = await axios.get(
+          "http://localhost:8080/auth/signin/success",
+          { withCredentials: true }
+        );
 
-  const signinPopupValue = useRecoilValue(SigninPopupAtom);
-  const signupPopupValue = useRecoilValue(SignupPopupAtom);
+        if (result.status === 200) {
+          setUserInfo(result.data);
+        } else {
+          setUserInfo(null);
+        }
+      } catch {
+        setUserInfo(null);
+      }
+    };
+
+    fetchUserInfo();
+  }, [setUserInfo]);
+
+  useEffect(() => {
+    if (!userInfo?.userId) return;
+
+    const isAdmin = userInfo.isAdmin === true;
+    const isAdminRoute = location.pathname.startsWith("/admin");
+
+    if (isAdmin !== isAdminRoute) {
+      navigate(isAdmin ? "/admin" : "/", { replace: true });
+    }
+  }, [userInfo, navigate, location.pathname]);
   return (
-    <div>
+    <>
       <GlobalStyle />
-      <div>{signinPopupValue && <Signin />}</div>
-      <div>{signupPopupValue && <Signup />}</div>
-      <OuterLayout>
-        <InnerLayout>
-          <Header />
-        </InnerLayout>
-        <Outlet />
-      </OuterLayout>
-    </div>
+      <AppLayout>
+        {popup.isOpen && <Popup />}
+        <Header />
+        <TitleWrap className="center">
+          <Link to="/">
+            <h1 className="title">커피 판매 시스템</h1>
+          </Link>
+        </TitleWrap>
+        <MainContent>
+          <Outlet />
+        </MainContent>
+      </AppLayout>
+    </>
   );
 }
-const GlobalStyle = createGlobalStyle`
-  li{list-style:none;
-    margin-left: -40px;
-      }
-`;
-const InnerLayout = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-`;
-const OuterLayout = styled.div`
-  background-color: whitesmoke;
-  height: 1200px;
-`;
 
 export default App;
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #f8f8f8;
+    color: #333;
+  }
+
+  a {
+    color: #5a2ea6;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  ul {
+    list-style: none;
+  }
+`;
+
+const AppLayout = styled.div`
+  padding: 20px;
+  width: 100%;
+`;
+
+const MainContent = styled.main`
+  min-height: 600px;
+`;
+
+const TitleWrap = styled.div`
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
