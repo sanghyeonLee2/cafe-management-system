@@ -1,7 +1,5 @@
 const express = require("express");
-const MenuItem = require("../models/menuItem");
-const MenuRecipe = require("../models/menuRecipe");
-const { sequelize } = require("../models");
+const { Material, MenuRecipe, MenuItem } = require("../models");
 const router = express.Router();
 
 router
@@ -13,116 +11,24 @@ router
       res.status(500).json({ error: err.message });
     }
   })
-  .post("/", async (req, res) => {
-    const t = await sequelize.transaction();
-    const {
-      menuItemPrice,
-      menuItemClassification,
-      menuItemIsSpecialMenu,
-      menuItemName,
-    } = req.body.menuFormState;
-    const { finalMenuRecipe } = req.body;
+  .get("/recipe/:menuItemNum", async (req, res) => {
+    console.log(req.params);
+    const { menuItemNum } = req.params;
     try {
-      const { menuItemNum } = await MenuItem.create(
-        {
-          menuItemPrice,
-          menuItemClassification,
-          menuItemIsSpecialMenu,
-          menuItemName,
-        },
-        { transaction: t }
-      );
-
-      finalMenuRecipe.map((elem) => {
-        elem["menuItemNum"] = menuItemNum;
-      });
-      console.log("123", finalMenuRecipe);
-      await MenuRecipe.bulkCreate(finalMenuRecipe, { transaction: t });
-      await t.commit();
-      res.status(200).json(menuItemNum);
-    } catch (err) {
-      await t.rollback();
-      console.log(err.message);
-      res.status(500).json({ error: err.message });
-    }
-  })
-  .put("/", async (req, res) => {
-    const { menuItemNum } = req.body;
-    const {
-      menuItemPrice,
-      menuItemClassification,
-      menuItemIsSpecialMenu,
-      menuItemName,
-    } = req.body.menuFormState;
-    try {
-      await MenuItem.update(
-        {
-          menuItemPrice,
-          menuItemClassification,
-          menuItemIsSpecialMenu,
-          menuItemName,
-        },
-        {
-          where: { menuItemNum },
-        }
-      );
-      res.status(200).send("Supplier update successfully!");
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).json({ error: err.message });
-    }
-  })
-  .delete("/", async (req, res) => {
-    const { menuItemNum } = req.body;
-    try {
-      await MenuItem.destroy({
+      const result = await MenuRecipe.findAll({
         where: { menuItemNum },
+        include: [
+          {
+            model: Material,
+            attributes: ["material_name", "material_unit"],
+          },
+        ],
+        raw: true,
+        nest: true,
       });
-      res.status(200).json("Supplier delete successfully!");
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).json({ error: err.message });
-    }
-  });
 
-router
-  .get("/recipe", async (req, res) => {
-    const { menuItemNum } = req.query;
-    try {
-      console.log("시작");
-      const result = await MenuRecipe.findAll({ where: { menuItemNum } });
       res.status(200).json(result);
     } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-    console.log(menuItemNum);
-  })
-  .patch("/recipe", async (req, res) => {
-    const { menuRecipeNum, menuRecipeUsage } = req.body;
-    try {
-      await MenuRecipe.update(
-        {
-          menuRecipeUsage,
-        },
-        {
-          where: { menuRecipeNum },
-        }
-      );
-      res.status(200).send("MenuRecipeUsage update successfully!");
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).json({ error: err.message });
-    }
-  })
-  .delete("/recipe", async (req, res) => {
-    const { menuRecipeNum } = req.body;
-    try {
-      await MenuRecipe.destroy({
-        where: { menuRecipeNum },
-      });
-      res.status(200).json("MenuRecipe delete successfully!");
-    } catch (err) {
-      console.log(err.message);
       res.status(500).json({ error: err.message });
     }
   });

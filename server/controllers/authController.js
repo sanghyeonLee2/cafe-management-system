@@ -37,31 +37,30 @@ router.post("/signup", async (req, res, next) => {
 });
 
 router.post("/signin", async (req, res) => {
-  console.log(req.body);
   const { userId, userPassword } = req.body;
   try {
     const result = await User.findOne({
-      where: {
-        userId,
-        userPassword,
-      },
+      where: { userId, userPassword },
       raw: true,
     });
-    console.log("123", result);
-    if (result.userId) {
+
+    if (result?.userId) {
       const { userName, userAddress, userPhoneNum, userId, userIsAdmin } =
         result;
+
       req.session.user = {
         userName,
         userAddress,
         userPhoneNum,
         userId,
-        userIsAdmin,
+        isAdmin: userIsAdmin === 1,
       };
+
       await saveSession(req);
       res.status(200).json(req.session.user);
       return;
     }
+
     res.status(401).json({ error: "Invalid credentials" });
   } catch (err) {
     console.error(err);
@@ -71,9 +70,20 @@ router.post("/signin", async (req, res) => {
 
 router.get("/signin/success", async (req, res) => {
   try {
-    res.status(200).json(req.session.user);
+    if (!req.session.user) {
+      return res.status(404).json("User not found");
+    }
+
+    const userData = {
+      ...req.session.user,
+      isAdmin:
+        req.session.user.isAdmin === 1 || req.session.user.isAdmin === true,
+    };
+
+    res.status(200).json(userData);
   } catch (err) {
-    res.status(404).json("User not found");
+    res.status(500).json({ error: err.message });
   }
 });
+
 module.exports = router;
