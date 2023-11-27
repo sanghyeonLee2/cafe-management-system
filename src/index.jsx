@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Home from "./pages/Home";
+import Home from "./pages/customer/Home";
 import { RecoilRoot } from "recoil";
 import AdminPage from "./pages/admin/AdminPage";
 import MenuManagement from "./pages/admin/MenuManagement";
@@ -10,10 +10,10 @@ import UserManagement from "./pages/admin/UserManagement";
 import OrderManagement from "./pages/admin/OrderManagement";
 import MaterialManagement from "./pages/admin/MaterialManagement";
 import SupplierManagement from "./pages/admin/SupplierManagement";
-import Supplier from "./pages/Supplier";
-import MenuItemInfo from "./pages/MenuItemInfo";
-import Order from "./pages/Order";
-import OrderInfo from "./pages/OrderInfo";
+import Supplier from "./pages/admin/Supplier";
+import MenuItemInfo from "./pages/customer/MenuItemInfo";
+import OrderList from "./pages/customer/OrderList";
+import PageNotFound from "./pages/PageNotFound";
 
 const router = createBrowserRouter([
   {
@@ -25,13 +25,10 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/order",
-        element: <Order />,
+        path: "/order-list",
+        element: <OrderList />,
       },
-      {
-        path: "/order-info",
-        element: <OrderInfo />,
-      },
+
       {
         path: "/admin",
         element: <AdminPage />,
@@ -57,12 +54,16 @@ const router = createBrowserRouter([
         element: <SupplierManagement />,
       },
       {
-        path: "/admin/supplier-management/supplier",
+        path: "/admin/supplier-management/:supplierNum",
         element: <Supplier />,
       },
       {
-        path: "/menuItemInfo",
+        path: "/menuItemInfo/:menuItemNum",
         element: <MenuItemInfo />,
+      },
+      {
+        path: "*",
+        element: <PageNotFound />,
       },
     ],
   },
