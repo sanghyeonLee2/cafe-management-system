@@ -22,7 +22,7 @@ class User extends Sequelize.Model {
           allowNull: false,
         },
         userPassword: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.STRING(255),
           allowNull: false,
         },
         userIsAdmin: {
