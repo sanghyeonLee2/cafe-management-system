@@ -24,7 +24,6 @@
     "sequelize": "^6.33.0",
     "sequelize-cli": "^6.6.1",
     "session-file-store": "^1.5.0",
-    "styled-component": "^2.8.0",
     "styled-components": "^6.0.8",
     "web-vitals": "^2.1.4"
   },
